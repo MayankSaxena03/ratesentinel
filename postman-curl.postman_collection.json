@@ -1,0 +1,229 @@
+{
+  "info": {
+    "name": "RateSentinel Phase-6 Demo",
+    "description": "Postman collection for RateSentinel API – Phase 6 demo & testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "adminToken", "value": "" },
+    { "key": "tenantId", "value": "1" },
+    { "key": "apiId", "value": "1" },
+    { "key": "userId", "value": "1" },
+    { "key": "apiKeyId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Admin Signup (Create User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"dev1@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"developer\"\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Tenants (DEMO-CRITICAL)",
+      "item": [
+        {
+          "name": "Create Tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/tenants", "host": ["{{baseUrl}}"], "path": ["tenants"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Acme Corp\" }"
+            }
+          }
+        },
+        {
+          "name": "Get Tenant Details",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/tenants/{{tenantId}}", "host": ["{{baseUrl}}"], "path": ["tenants", "{{tenantId}}"] }
+          }
+        },
+        {
+          "name": "Suspend Tenant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/tenants/{{tenantId}}/status", "host": ["{{baseUrl}}"], "path": ["tenants", "{{tenantId}}", "status"] },
+            "body": { "mode": "raw", "raw": "{ \"status\": \"suspended\" }" }
+          }
+        },
+        {
+          "name": "Tenant Kill Switch",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/tenants/{{tenantId}}/kill-switch", "host": ["{{baseUrl}}"], "path": ["tenants", "{{tenantId}}", "kill-switch"] },
+            "body": { "mode": "raw", "raw": "{ \"killSwitch\": true }" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "APIs (DEMO-CRITICAL)",
+      "item": [
+        {
+          "name": "Create API",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/apis", "host": ["{{baseUrl}}"], "path": ["apis"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Payments API\",\n  \"environment\": \"prod\",\n  \"baseUrl\": \"https://api.example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Disable API (Kill Switch)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/apis/{{apiId}}/disable", "host": ["{{baseUrl}}"], "path": ["apis", "{{apiId}}", "disable"] },
+            "body": { "mode": "raw", "raw": "{ \"isActive\": false }" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "API Keys",
+      "item": [
+        {
+          "name": "Generate API Key",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/apis/{{apiId}}/keys", "host": ["{{baseUrl}}"], "path": ["apis", "{{apiId}}", "keys"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Users (DEMO-CRITICAL)",
+      "item": [
+        {
+          "name": "Change User Role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/users/{{userId}}/role", "host": ["{{baseUrl}}"], "path": ["users", "{{userId}}", "role"] },
+            "body": { "mode": "raw", "raw": "{ \"role\": \"admin\" }" }
+          }
+        },
+        {
+          "name": "Disable User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/users/{{userId}}/status", "host": ["{{baseUrl}}"], "path": ["users", "{{userId}}", "status"] },
+            "body": { "mode": "raw", "raw": "{ \"status\": \"disabled\" }" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Blocked Events (DEMO-CRITICAL)",
+      "item": [
+        {
+          "name": "Block IP",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/blocked-events", "host": ["{{baseUrl}}"], "path": ["blocked-events"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"block_type\": \"ip\",\n  \"identifier\": \"1.2.3.4\",\n  \"reason\": \"Abuse detected\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Unblock by Entity",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/blocked-events/unblock", "host": ["{{baseUrl}}"], "path": ["blocked-events", "unblock"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"block_type\": \"ip\",\n  \"identifier\": \"1.2.3.4\"\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "List Request Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/audit/requests", "host": ["{{baseUrl}}"], "path": ["audit", "requests"] }
+          }
+        }
+      ]
+    }
+  ]
+}
