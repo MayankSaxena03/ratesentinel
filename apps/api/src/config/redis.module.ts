@@ -11,6 +11,7 @@ import { Redis } from 'ioredis';
           host: process.env.REDIS_HOST,
           port: Number(process.env.REDIS_PORT),
           password: process.env.REDIS_PASSWORD,
+          tls: {},
           connectTimeout: 3000,
           maxRetriesPerRequest: 1,
           retryStrategy: (times) => {
